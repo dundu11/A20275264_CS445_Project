@@ -6,16 +6,25 @@ public class Bed implements Serializable
 {
  private int RoomNumber;
  private int BedNumber;
+ 
+ public Date StartingDate = new Date();
+ public Date EndingDate   = new Date();
+ 
+ static final long serialVersionUID = 72L;
+ 
    
  public class BedInformation implements Serializable
  {
 	 int     Price;
 	 boolean Booked; 
 	 int  BookingId;
+	 
+	 static final long serialVersionUID = 81L;
  }
  
- public Map<Date,BedInformation> BedInfo= new HashMap<Date,BedInformation>(); 
+ public  Map<Date,BedInformation> BedInfo= new HashMap<Date,BedInformation>(); 
  
+ /*
  public void BedDetails()
  {
 		
@@ -28,40 +37,18 @@ public class Bed implements Serializable
 	 }
 	 
  }
+ */
  
- public void AddRoomInformation(Date low,Date high,int rate){
+ public void AddRoomInformation(Date date,int rate){
 	 
 	 BedInformation BI = new BedInformation();
-	
-	 if (low.equals(high))
-	 {
-		 BI.Price     = rate;
-		 BI.Booked    = false;
-		 BI.BookingId = 0;
+	 BI.Price     = rate;
+	 BI.Booked    = false;
+	 BI.BookingId = 0;
 		 
-		 BedInfo.put(low, BI);
-		 return;
-	 }
+	 BedInfo.put(date, BI);
 		 
-	 Calendar start = Calendar.getInstance();
-	 start.setTime(low);
-	 Calendar end = Calendar.getInstance();
-	 end.setTime(high);
-	 
-	 
-	 for (Date date = start.getTime(); !start.after(end); 
-			  start.add(Calendar.DATE, 1), date = start.getTime())
-	 {
-		 BI.Price     = rate;
-		 BI.Booked    = false;
-		 BI.BookingId = 0;
-		 
-		 BedInfo.put(date, BI);
-		 
-	 }
-		 
-		 
-	  
+  
  }
  
   

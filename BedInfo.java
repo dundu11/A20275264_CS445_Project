@@ -6,4 +6,6 @@ public class BedInfo implements Serializable
 	int RoomNumber; 
 	int BedNumber ; 
 	int Price ;	
+	
+	static final long serialVersionUID = 82L;
 }

@@ -1,11 +1,18 @@
-import java.util.Date;
+import java.io.Serializable;
+import java.util.*;
 
-public class User {
+public class User implements Serializable{
 
-int     UserId;
-String  Name;
-String  EmailID;
-Date    DateCreation;
-
+    public int     UserId;
+    public String  FirstName;
+    public String  LastName;
+    public String  EmailID;
+    public Date    DateCreation;
+    public String  CCNumber;
+    public Date    ExpiryDate;
+    public String  SecurityCode;
+    public String  PhoneNumber;
+    
+    static final long serialVersionUID = 49L;
 
 }

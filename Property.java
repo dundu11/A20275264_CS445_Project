@@ -9,12 +9,36 @@ private String Street,State,PostalCode;
 private String Country,Phone,EmailId,Web;
 private String Check_In,Check_Out,Facebook;
 private String Smoking,Alcohol;
-static Date LoadStartDate = new Date();
-static Date LoadEndDate   = new Date();
+private String cancellation_penalty;
+private int cancellation_deadline;
 
-//static final long serialVersionUID = 56L;
+public int CancelRevenue=0;
+
+//static final long serialVersionUID = 85L;
 
 List<Bed> Beds = new ArrayList<Bed>();
+
+
+public void SetPenalty(String penalty)
+{
+	cancellation_penalty = penalty;
+}
+
+public int GetPenalty()
+{
+	String str = cancellation_penalty.substring(0, cancellation_penalty.length() - 1);
+	return Integer.parseInt(str);
+}
+
+public void SetDedline(int dedline)
+{
+	cancellation_deadline = dedline;
+}
+
+public int GetDedline()
+{
+	return cancellation_deadline;
+}
 
 public void SetFaceBookID(String name)
 {
@@ -166,6 +190,7 @@ public String GetStreetName()
 } 
 
 
+/*
 
 public void DisplayPropertyDetails()
 {
@@ -181,6 +206,8 @@ public void DisplayPropertyDetails()
 //	 System.out.println(b.GetBedNumber() + "   "+b.GetRoomNumber());
  }
 }
+
+*/
 
 }
 
