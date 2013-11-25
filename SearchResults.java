@@ -12,4 +12,6 @@ public TreeSet<Integer> Rooms = new TreeSet<Integer>();
 List<BedInfo>  Beds = new ArrayList<BedInfo>();
 static final long serialVersionUID = 56L;
 
-}
+} 
+
+

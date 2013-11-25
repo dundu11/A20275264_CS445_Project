@@ -24,7 +24,7 @@ static List<Booking> GetBookingList() throws IOException, ClassNotFoundException
 
 public class Booking implements Serializable
 {
-  String CityName;
+  String CityName; 
   String PropertyName;
   int NumberOfBeds;
   int Beds[];

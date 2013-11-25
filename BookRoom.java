@@ -1,3 +1,4 @@
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.BufferedInputStream;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
+ 
 
 public class BookRoom implements Serializable {
 	
@@ -105,9 +106,12 @@ public class BookRoom implements Serializable {
 				    	 for (Date date = start.getTime(); !start.equals(end); 
 				    			  start.add(Calendar.DATE, 1), date = start.getTime())
 				    	 {
-				    		 //System.out.println("Before Booking--->"+date);
-				    		 
-				    		 //System.out.println(TempBed.BedInfo.get(date).Booked);  
+				    		 if(TempBed.BedInfo.get(date).Booked)
+				    		 {
+				    			 System.out.println("Beds are already booked with this search Id !!!!");
+				    			 System.out.println();
+				    			 return;
+				    		 }
 				    		 
 				    		  TempBed.BedInfo.get(date).Booked     = true;
 				    		  TempBed.BedInfo.get(date).BookingId  = randomInteger;
@@ -190,18 +194,19 @@ public class BookRoom implements Serializable {
 		ReadBookingDetails();
 		boolean Found = false;
 		
-		
-				
+						
 		for (BookingDetails BD : Booking)
 		{
 			if(BD.BookingId == Integer.parseInt(SID))
 			{
 			  Found = true;
+			  System.out.println("Cancellation done !!!!!!!!!!!");
+			  
 			  Booking.remove(BD);
 			  Date Today = new Date();
 			  
-			  System.out.println(BD.cancellation_deadline);
-			  System.out.println(BD.cancellation_penalty);
+//			  System.out.println(BD.cancellation_deadline);
+//			  System.out.println(BD.cancellation_penalty);
 			  
 			  if( ( (BD.CheckIn.getTime() - Today.getTime())/(60 *60 *1000)) < BD.cancellation_deadline)
 			  {
@@ -219,10 +224,11 @@ public class BookRoom implements Serializable {
 		  StoreBookingDetails(); 
 		
 		if(!Found)
-			System.out.println("\n No booking with " +SID +" booking id!!!");
+			System.out.println("No booking with " +SID +" booking id!!!");
 		else
 		{
-		   	for(Property P : pts)
+			
+			for(Property P : pts)
 			{
 		  	  for(Bed TempBeds : P.Beds)
 			  {
@@ -239,7 +245,7 @@ public class BookRoom implements Serializable {
 		    	   		 }
 		
 		  		}
-			 
+			  
 		  	  }
 					
 			}
@@ -269,21 +275,133 @@ public class BookRoom implements Serializable {
 		 	
 	}
 	
-	public void GetRevenue(String Start,String End, List<Property> pts) throws ClassNotFoundException, FileNotFoundException, IOException
+	public void GetStatus(String Command,String City,String Start,String End, List<Property> pts) throws ClassNotFoundException, FileNotFoundException, IOException
 	{
-		if ((Start == null) && (End ==null))
-		{
-			
+		List<Property> SelectedProp = new ArrayList<Property>();
+		
+		Date StartDate = new Date();
+		Date EndDate = new Date();
+		
+		int Revenue     = 0;
+		int BookedRooms = 0;
+		int TotalRooms  = 0;
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		df.setLenient(false);
+		
+		try {
+		  	 
+		  	 		  	 
+		  	 if(Start != null)
+		  	   StartDate =  df.parse(Start);
+		  	 
+		  	 if(End != null)
+		  	     EndDate   =  df.parse(End);
+		  	  	 
+		  	 
+		  	 if ((Start != null) && (End != null))
+		  	 {
+               if(EndDate.before(StartDate) || EndDate.equals(StartDate))
+               {
+          	       System.out.println("End Date is past or equal start date");
+          	       System.out.println("Please enter proper date ");
+          	        return;
+                }
+		  	 }
+
+		  	}
+		  	catch(ParseException pe) {
+		  		System.out.println();
+		  		System.out.println("Arguement to date is not proper");
+               System.out.println("Please enter proper date in YYYYMMDD format");
+               System.out.println();
+               return;
+                                    
+          }
+
+		
+		if ( City != null)
+		{	
+		  for(Property P : pts)
+		  {
+		        if (P.GetCityName().equals(City))
+		   	        	SelectedProp.add(P);
+		        	        	
+		  }
 		}
 		
-	}
-	
-	
-	
-	public void GetOccupancy(String Start,String End, List<Property> pts) throws ClassNotFoundException, FileNotFoundException, IOException
-	{
+		else
+		{	
+			for(Property P : pts)
+			  {
+			   SelectedProp.add(P);
+			  }
+		}	
+		
+		if(SelectedProp.isEmpty())
+	  	{
+	  	  System.out.println("No Hostels found in city "+City);
+	  	  		return ;
+	  	}
+		
+		System.out.println();
+		
+		
+		for(Property P : pts)
+		{
+			Revenue=0;
+			BookedRooms = 0;
+			TotalRooms  = 0;
+			
+			Map<Date,SimpleSearchResults> SelectedBeds = new TreeMap<Date,SimpleSearchResults>();  
+			
+			for (Bed B : P.Beds)
+			{
+				Map<Date,Bed.BedInformation> SortedBedInfo= new TreeMap<>(B.BedInfo); 
+		    	   
+		    	   
+		    	   for (Map.Entry<Date,Bed.BedInformation> entry : SortedBedInfo.entrySet())
+		    	   {
+		    		   Date key =  entry.getKey();
+		    	       
+		    	       
+		    	       if((Start != null) && (StartDate.after(key)))
+		    	           continue;
+		    	       
+		    	       
+		    		   if ((End != null) && (EndDate.equals(key)))
+		    		    	 break;
+		    		 
+		    		   if(SortedBedInfo.get(key).Booked)
+		    	   	   {
+		    			   Revenue += SortedBedInfo.get(key).Price;
+		    		       BookedRooms++;
+		    	   	   }
+		    		   
+		    		   TotalRooms++;
+				
+			      }
+			
+			
+		    }
+			
+			if (Command.equals("revenue"))
+			  System.out.println(P.GetPropertyName() +", "+P.GetCityName()+"  "+ Revenue);
+		
+			else if (Command.equals("occupancy"))
+			{
+				//System.out.println(BookedRooms);
+				long occupancy = ((BookedRooms*100/TotalRooms));
+				System.out.println(P.GetPropertyName() +", "+P.GetCityName()+",  "+ occupancy+"%");
+			}
+		}
+		System.out.println();
 		
 	}
+	
+	
+	
+	
 	
 	
 	

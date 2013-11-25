@@ -12,11 +12,11 @@ private String Smoking,Alcohol;
 private String cancellation_penalty;
 private int cancellation_deadline;
 
-public int CancelRevenue=0;
+public int CancelRevenue=0; 
 
 //static final long serialVersionUID = 85L;
 
-List<Bed> Beds = new ArrayList<Bed>();
+List<Bed> Beds = new ArrayList<Bed>(); 
 
 
 public void SetPenalty(String penalty)

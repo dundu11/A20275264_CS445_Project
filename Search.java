@@ -12,7 +12,7 @@ private int    NumberOfBeds;
 private Date   StartDate;
 private Date   EndDate;
 
-private boolean IsContinuous; 
+private boolean IsContinuous;  
 
 static final long serialVersionUID = 100L;
 
@@ -33,7 +33,7 @@ public Date GetStartDate(){
 
 public Date GetEndDate(){
 	return EndDate;
-}
+} 
 
 public int GetNumberOfBeds(){
 	return NumberOfBeds;
@@ -47,7 +47,7 @@ public void SimpleSearch(String City,String SDate,String EDate,int BedCount,List
 	NumberOfBeds  =  BedCount;
 	StartDate     =  new Date();
 	EndDate       =  new Date();
-
+ 
 	BedMap.clear();
 	SelectedProp.clear();
 
@@ -86,6 +86,7 @@ public void SimpleSearch(String City,String SDate,String EDate,int BedCount,List
 	  }
 	}
 	
+	
 	else
 	{	
 		for(Property P : properties)
@@ -94,10 +95,15 @@ public void SimpleSearch(String City,String SDate,String EDate,int BedCount,List
 		  }
 	}	
 	
+	 if(SelectedProp.isEmpty()){
+		  System.out.println(" No Property exist in "+City+" city!!!!!!!!!!!");
+		  return ;
+	  }
 	
 	for(Property P : SelectedProp)
 	{
 		 System.out.println(P.GetPropertyName() +"," + P.GetCityName());
+		 boolean availFlag = true;
 		 		 
 		 Calendar start = Calendar.getInstance();
 		 start.setTime(StartDate);
@@ -196,10 +202,15 @@ public void SimpleSearch(String City,String SDate,String EDate,int BedCount,List
       		   {
     		   System.out.print(df.format(key) + " to "+df.format(NextDate) + " : " + SelectedBeds.get(key).Count + " Beds available between ");
       		   System.out.println("$"+ SelectedBeds.get(key).MinPrice + " and $" + SelectedBeds.get(key).MaxPrice);
+      		   availFlag = false;
       		   }
       		 }	
     		    	 
     	 }
+    	 
+    	 if(availFlag)
+    		System.out.println("Sorry ! All beds have been booked");
+    	 
     	 System.out.println();
     	 
     	  
@@ -250,6 +261,7 @@ public void SearchBeds(String City,Date Start,Date End,int BedCount,List<Propert
 			  
 			  IsAvail=true;
 			  //System.out.println("Inside Search " + BD.GetBedNumber());
+			  int SearchPrice = 0;
 			  	    	 	        	
 	    	 Calendar start = Calendar.getInstance();
 	    	 start.setTime(StartDate);
@@ -263,12 +275,19 @@ public void SearchBeds(String City,Date Start,Date End,int BedCount,List<Propert
 	    	 {
 	    	    
 	    		// System.out.println("Inside Search " + date);
-	    		  
+	    		 if(BD.BedInfo.get(date) == null)
+	    		 {
+	    			 IsAvail = false;
+		    			break;
+	    		 }
+	    		 else
 	    		 if (BD.BedInfo.get(date).Booked)
 	    		 {	 
 	    			IsAvail = false;
 	    			break;
 	    		 }
+	    		 else
+	    			 SearchPrice += BD.BedInfo.get(date).Price;
 	    	 }
 	    		
 	    	 if (IsAvail)
@@ -279,7 +298,7 @@ public void SearchBeds(String City,Date Start,Date End,int BedCount,List<Propert
 	    		 
 	    		 LC.BedNumber   = BD.GetBedNumber();
     			 LC.RoomNumber  = BD.GetRoomNumber(); 
-    			 LC.Price      += BI.Price;
+    			 LC.Price       = SearchPrice;
     			 LC.PropertyName = SP.GetPropertyName();
     			 
     			//System.out.println("LC.BedNumber    ==" + LC.BedNumber);
@@ -311,7 +330,7 @@ public void SearchBeds(String City,Date Start,Date End,int BedCount,List<Propert
 	  else
 	  {
 		System.out.println("Sorry !! No contiguous Beds found !!!!");
-		System.out.println("Check following availibility ");
+		System.out.println("Check following availibility \n");
 		
 		SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMdd");
 		df1.setLenient(false);
@@ -352,6 +371,7 @@ void ConstructSearchResults(){
 				    for(int j=0;j<NumberOfBeds;j++)
 				    {
 					   SR1.Beds.add(BI.get(j+(NumberOfBeds)*i));
+					   //System.out.println(BI.get(j+(NumberOfBeds)*i).Price);
 					   SR1.price += BI.get(j+(NumberOfBeds)*i).Price;
 					   SR1.Rooms.add(BI.get(j+(NumberOfBeds)*i).RoomNumber);
 				    }
@@ -381,7 +401,7 @@ void ConstructSearchResults(){
 		{
 			if(!((S.PropertyID.equals(SP)) &&(SearchCity.equals(SC))))
 			{	
-				System.out.println();
+			//	System.out.println();
 			  System.out.println(S.PropertyID+", "+ SearchCity );
 			  SP =  S.PropertyID;
 			  SC =  SearchCity;
@@ -399,6 +419,8 @@ void ConstructSearchResults(){
 			
 		}
 		
+		System.out.println();
+		
 	
 	}
 	else
@@ -407,4 +429,4 @@ void ConstructSearchResults(){
 	
 	}
 }
-
+ 

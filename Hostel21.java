@@ -12,12 +12,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element; 
 
 
+
 class Hostel21 implements Serializable{
 
 	static final long serialVersionUID = 42L;
 	static List<Property> properties = new ArrayList<Property>();
 	static List<User>     users      = new ArrayList<User>();
-	
+	 
 			
 	static Search srh     = new Search();
 	
@@ -37,10 +38,10 @@ class Hostel21 implements Serializable{
 	         
 	    }
 		catch (Exception e) {
-	        e.printStackTrace();
+	        e.printStackTrace(); 
 	    }
 		finally {
-	    	if(out != null){
+	    	if(out != null){ 
 	           out.close();
 	    	}
 	   }
@@ -53,7 +54,7 @@ class Hostel21 implements Serializable{
 		final String dataFile = "user.txt";
 				
 		ObjectInputStream in = null;
-	    
+	     
 		try {
 			in = new ObjectInputStream(new
 	                BufferedInputStream(new FileInputStream(dataFile)));
@@ -63,7 +64,7 @@ class Hostel21 implements Serializable{
 							         
 	    }catch(FileNotFoundException e) {
 	    	//e.printStackTrace();
-	    	//System.out.println("File Not Found");
+	    	//System.out.println("File Not Found");assertTrue(file.exists());
 	       
 	   }finally {
 	    	if(in != null){
@@ -77,7 +78,7 @@ class Hostel21 implements Serializable{
 	{
 		final String dataFile = "property.txt";
 		
-				
+				 
 		ObjectOutputStream out = null;
 	    
 		try {
@@ -94,7 +95,7 @@ class Hostel21 implements Serializable{
 		finally {
 	    	if(out != null){
 	           out.close();
-	    	}
+	    	} 
 	   }
 
 	}
@@ -187,21 +188,26 @@ class Hostel21 implements Serializable{
 		String City    = null;
 		String Start   = null;
 		String End     = null;
-		int    beds    = 0;
+		int    beds    = 0; 
 		
 		Date StartDate = new Date();
 		Date EndDate   = new Date();
 	    
 		Random random = new Random();
 		int UserId = random.nextInt(100000);
-		
-		//DatabaseConnection Connect = new DatabaseConnection();
 				
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		df.setLenient(false);
 		
+		if(args.length == 0)
+		{
+			System.out.println("No arguements to main");
+			System.out.println();
+			return ;
+		}
+		
 		Command = args[0];
-		if(Command.equals("search") || Command.equals("Search"))
+		if(Command.equals("search"))
 		{
 			ReadProperty();
 			
@@ -210,16 +216,66 @@ class Hostel21 implements Serializable{
 		  	  System.out.println("Hostel properties are not loaded !!!!! ");
 		  	  		return ;
 		  	}
-			for(int i =1;i<args.length;i++){
-		  		if(args[i].equals("--city"))
+			for(int i =1;i<args.length;i+=2){
+				 
+				if(args[i].equals("--city"))
+				{ 
+					if( i == args.length-1)
+					{
+						System.out.println();
+			  			System.out.println("\nNo arguments for : " + args[i]);
+			  			System.out.println(); 
+			  			return ;	
+						
+					}
+				 
 		  			City = args[i+1];
-		  		if (args[i].equals("--start_date"))
-		  			Start = args[i+1];
-		  		if (args[i].equals("--end_date"))
+				}
+				else if (args[i].equals("--start_date"))
+				{	
+					if( i == args.length-1)
+					{
+						System.out.println();
+			  			System.out.println("\nNo arguments for : " + args[i]);
+			  			System.out.println(); 
+			  			return ;	
+						
+					}
+		  			
+					Start = args[i+1];
+				}
+		  		else if (args[i].equals("--end_date"))
+		  		{
+		  			if( i == args.length-1)
+					{
+						System.out.println(); 
+			  			System.out.println("\nNo arguments for : " + args[i]);
+			  			System.out.println(); 
+			  			return ;	
+						
+					}
 		  			End = args[i+1];
-		  		if (args[i].equals("--beds"))
+		  		}
+		  		else if (args[i].equals("--beds"))
+		  		{
+		  			if( i == args.length-1)
+					{
+						System.out.println();
+			  			System.out.println("\nNo arguments for : " + args[i]);
+			  			System.out.println(); 
+			  			return ;	
+						
+					}
 		  			beds = Integer.parseInt(args[i+1]);
-		  		
+		  		}
+		  		else
+		  		{	
+		  			System.out.println();
+		  			System.out.println("\nNot Valid command: Search usage is as follows ");
+		  			System.out.println("search [--city \"City name\"] [--start_date YYYYMMDD] [--end_date YYYYMMDD] [--beds x]");
+		  			System.out.println(); 
+		  			return ;
+		  		}
 		  	}
 		  	
 		  	try {
@@ -233,14 +289,15 @@ class Hostel21 implements Serializable{
                {
            	     System.out.println("Entered Date is past date");
            	     System.out.println("Please enter proper date ");
-           	      return;
+           	      return ;
                }
 		  	 }
 		  	 
 		  	 if(End != null)
 		  	 {
 		  		 EndDate   =  df.parse(End);
-		  		
+		  		 // System.out.println(End);
+		  		 
 		  		 if(EndDate.before(Today))
 	             {
 	           	  System.out.println("Entered Date is past date");
@@ -253,18 +310,23 @@ class Hostel21 implements Serializable{
 		  	 {
                 if(EndDate.before(StartDate) || EndDate.equals(StartDate))
                 {
-           	       System.out.println("End Date is past start date");
+                   System.out.println();
+                   System.out.println("End Date is past start date or same as start date");
            	       System.out.println("Please enter proper date ");
-           	        return;
+           	       System.out.println();
+           	       return ;
                  }
 		  	 }
 
 		  	}
 		  	catch(ParseException pe) {
-                System.out.println("Date format or entered is not proper");
-                System.out.println("Please enter proper date ");
+		  		System.out.println();
+		  		System.out.println("Arguement to date is not proper");
+                System.out.println("Please enter proper date in YYYYMMDD format");
+                System.out.println();
+                return ;
                                      
-           }
+           } 
 		  	
 		  	SimpleDateFormat df1 = new SimpleDateFormat("MM/dd/yyyy");
    		    df1.setLenient(false);
@@ -290,7 +352,7 @@ class Hostel21 implements Serializable{
 				StoreSR();
 			}
 			else
-			{	
+			{	 
 			   srh.SimpleSearch(City,Start,End,beds,properties);	
 			   
 			}
@@ -299,28 +361,104 @@ class Hostel21 implements Serializable{
 		
 		else if (Command.equals("admin"))
 		{
+			//System.out.println(args.length);
+			
+			if(args.length ==1)
+            { 
+				System.out.println();
+	  			System.out.println("No Argumenets to : " + Command);
+	  			System.out.println(); 
+	  			return ;
+					
+		   }
+
 			if(args[1].equals("load"))
 			{
-				 properties.clear();
-				  ParseXML(args[2]);
-				 // System.out.println(properties.size());
-				  //Connect.StoreUser(properties);
-				  StoreProperty();
-				  //Connect.getData();
-				  
+				  properties.clear();
+				  				  
+				  if(args.length == 3)
+				  {
+					 ParseXML(args[2]);
+				     StoreProperty();
+			      } 
+				  else
+					  System.out.println("\nNo arguments for : " + args[1]);
+					  
 			}
-			else if (args[1].equals("revenue"))
+			else if (args[1].equals("revenue") || args[1].equals("occupancy"))
 			{
 				BookRoom BR = new BookRoom();
 				ReadProperty();
-				BR.GetRevenue(args[2],args[3],properties);
+				
+				for(int i =2;i<args.length;i+=2)
+				{
+					
+					if(args[i].equals("--city"))
+					{ 
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+					 
+			  			City = args[i+1];
+					}
+					else if (args[i].equals("--start_date"))
+					{	
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+			  			
+						Start = args[i+1];
+					}
+			  		else if (args[i].equals("--end_date"))
+			  		{
+			  			if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+			  			End = args[i+1];
+			  		}
+			  		else
+			  		{	
+			  			System.out.println();
+			  			System.out.println("\nNot valid arguement : " + args[i]);
+			  			System.out.println(); 
+			  			return ;
+			  		}
+			  	}
+				
+				if(properties.isEmpty())
+			  	{
+			  	  System.out.println("Hostel properties are not loaded !!!!! ");
+			  	  		return ;
+			  	}
+			  		
+			  	
+				 BR.GetStatus(args[1],City,Start,End,properties);
+				
+				
 			}
-			if(args[1].equals("occupancy"))
+						
+			else
 			{
-				//Need to Do
-				BookRoom BR = new BookRoom();
-				ReadProperty();
-				BR.GetOccupancy(args[2],args[3],properties);
+				System.out.println();
+	  			System.out.println("\nInvalid command  : " + args[1]);
+	  			System.out.println(); 
+	  			return ;
+				
 			}
 			
 		}
@@ -329,8 +467,68 @@ class Hostel21 implements Serializable{
 		{
 			BookRoom BR = new BookRoom();
 			
+			String SID =null;
+			String UID =null;
+            if(args.length ==1)
+            { 
+				System.out.println();
+	  			System.out.println("No Argumenets to : " + Command);
+	  			System.out.println(); 
+	  			return ;
+					
+		   }
+            
+			
 			if(args[1].equals("add"))
 			{
+				//System.out.println(args.length);
+				
+				if(args.length != 6)
+				{
+					System.out.println("\nArguements are not proper/complete: Usage is as follows ");
+					System.out.println("book add --search_id xxxxx --user_id yyyyy");
+					System.out.println();
+					return ;
+				}
+				
+				for(int i =2;i<args.length;i+=2)
+				{
+					
+					if(args[i].equals("--search_id"))
+					{ 
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+					 
+			  			SID = args[i+1];
+					}
+					else if (args[i].equals("--user_id"))
+					{	
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+			  			
+						UID = args[i+1];
+					}
+			  		else
+			  		{	
+			  			System.out.println();
+			  			System.out.println("\nNot valid arguement : " + args[i]);
+			  			System.out.println(); 
+			  			return ;
+			  		}
+			  	}
+				 
 				ReadSR();
 				ReadProperty();
 				ReadUsers();
@@ -342,7 +540,7 @@ class Hostel21 implements Serializable{
 				
 				for(User U : users)
 				{
-					if( U.UserId == Integer.parseInt(args[5]))
+					if( U.UserId == Integer.parseInt(UID))
 					{
 					   UserFound = true;
 					}
@@ -352,28 +550,28 @@ class Hostel21 implements Serializable{
 				if(!UserFound)
 				{
 					System.out.println("\n User does not exist. Please enter proper User");
-					return;
+					return ;
 				}
 				
 				for(SearchResults S : srh.SR){
 					
 							
-					if( S.SearchID.equals(args[3]))
+					if( S.SearchID.equals(SID))
 					{
 						ProperSearchName = true;
 						S1=S;
 						break;
-						
+						 
 					}
 				}
 				
 				if(ProperSearchName)
 				{	
-			  	  BR.DoBooking(srh.GetSearchCity(),srh.GetStartDate(),srh.GetEndDate(),S1,properties,args[5],users);
+			  	  BR.DoBooking(srh.GetSearchCity(),srh.GetStartDate(),srh.GetEndDate(),S1,properties,UID,users);
 			  	  StoreProperty();
 				}
 			  	 else
-					System.out.println("Please Enter Proper Search Id : " + args[3] );
+					System.out.println("Please Enter Proper Search Id : " + SID );
 				
 			}
 			
@@ -381,24 +579,83 @@ class Hostel21 implements Serializable{
 			{ 
 				//To do
 				ReadProperty();
-				System.out.println("Cancel booking");
+				//System.out.println("Cancel booking");
+				
+				if(args.length != 4)
+				{	
+					System.out.println("\nArguements are not proper/complete: Usage is as follows ");
+					System.out.println("book cancel --booking_id xxxxx");
+					System.out.println();
+					return ;
+				
+				}	
+				if(!(args[2].equals("--booking_id")))
+				{	
+					System.out.println("Invalid Command Option " + args[2] );
+					System.out.println("Following is the Usage");
+					System.out.println("book cancel --booking_id xxxxx");
+					return ;
+				
+				}	
 				BR.CancelBooking(args[3],properties);
 				StoreProperty();
 			}
 			
 			else if(args[1].equals("view"))
 			{
-				//To do
+				
 				System.out.println("View booking");
+				if(args.length != 4)
+				{	
+					System.out.println("\nArguements are not proper/complete: Usage is as follows ");
+					System.out.println("book view --booking_id xxxxx");
+					System.out.println();
+					return ;
+				
+				}	
+				if(!(args[2].equals("--booking_id")))
+				{	
+					System.out.println("Invalid Command " + args[1] );
+					System.out.println("book view --booking_id xxxxx");
+					return ;
+				
+				}
+				
 				BR.ViewBooking(args[3]);
+			}
+			else
+			{ 
+					System.out.println();
+		  			System.out.println("\nInvalid command  : " + args[1]);
+		  			System.out.println(); 
+		  			return ;
+						
+				
 			}
 		
 		}
 		else if(Command.equals("user"))
 		{
-						
+			if(args.length == 1)
+			{
+				System.out.println();
+	  			System.out.println("\nNo arguments for : " + Command);
+	  			System.out.println(); 
+	  			return ;
+				
+			}
+			
 			if(args[1].equals("add"))
 			{
+				
+				if(args.length == 2)
+				{
+					System.out.println();
+		  			System.out.println("\nNo arguments for : " + args[1]);
+		  			System.out.println(); 
+		  			return ;
+					
+				}
 				
 				String  FirstName    = null;
 				String  LastName     = null; 
@@ -407,49 +664,142 @@ class Hostel21 implements Serializable{
 				String  SecurityCode = null;
 				String  PhoneNumber  = null;
 				
-				Date    DateCreation = new Date();;
-				Date    ExpiryDate   = new Date();;
-												
-				System.out.println("UserId --> " + UserId);
+				Date    DateCreation = new Date();
+				Date    ExpiryDate   = new Date();
 				
-				for(int i =2;i<args.length;i++)
+				boolean bFirst= false;
+				boolean bLast= false;
+				boolean bEmail= false;
+				
+												
+				//System.out.println("UserId --> " + UserId);
+				
+				for(int i =2;i<args.length; i=i+2)
 				{
 					if(args[i].equals("--first_name"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+						
 						FirstName = args[i+1];
+						bFirst = true;
 					}
 					else if(args[i].equals("--last_name"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+						
 						LastName = args[i+1];
+						bLast = true;
 					}
 					else if(args[i].equals("--email"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+						
 						EmailID = args[i+1];
+						bEmail = true;
 					}
 					else if(args[i].equals("--cc_number"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
 						CCNumber = args[i+1];
 					}
 					else if(args[i].equals("--security_code"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
+						
 						SecurityCode = args[i+1];
 					}
 					else if(args[i].equals("--phone"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
 						PhoneNumber = args[i+1];
 					}
 					else if(args[i].equals("--expiration_date"))
 					{
+						if( i == args.length-1)
+						{
+							System.out.println();
+				  			System.out.println("\nNo arguments for : " + args[i]);
+				  			System.out.println(); 
+				  			return ;	
+							
+						}
 						ExpiryDate = df.parse(args[i+1]);
 					}
+					else
+					{
+						System.out.println();
+						System.out.println("Not proper command option :" + args[i]);
+						System.out.println();
+						return ;
+					}
+					
 				}
+				
+				 if(!(bFirst && bLast && bEmail))
+				 {
+					 System.out.println();
+					 System.out.println("First name ,Last name and Email Id are must for user to register");
+					 System.out.println("Following is the usage : ");
+					 System.out.println("user add --first_name \"abc\" --last_name \"bcd\" --email \"abc@xyz.com\" [ --cc_number --expiration_date --security_code --phone ]");
+					 
+					 System.out.println();
+					
+					 return ;
+					 
+				 }
 				
 				    					
 		    		ReadUsers();
 		    		boolean UserPresent = false;
+		    		
+		    		//System.out.println(EmailID);
 		    				    		
 					for (User U : users)
 					{
+						//System.out.println(EmailID);
+						//System.out.println(U.EmailID);
 						if(U.EmailID.equals(EmailID))
 						{
 						  System.out.println("User is already added.!!! ");
@@ -511,10 +861,23 @@ class Hostel21 implements Serializable{
 			
 			else if(args[1].equals("view"))
 			{
-				if(args[2].isEmpty())
-				{
-					System.out.println("User ID is empty !!!!!!!!");
+				if(args.length != 4)
+				{	
+					System.out.println("Arguements are not proper/complete: Usage is as follows ");
+					System.out.println("user view --user_id xxxxx");
+					System.out.println();
+					return ;
+				
+				}	
+				
+				if(!(args[2].equals("--user_id")))
+				{	
+					System.out.println("Invalid Command " + args[1] );
+					System.out.println("user view --user_id xxxxx");
+					return ;
+				
 				}
+								
 				else
 				{
 			 	
@@ -558,57 +921,151 @@ class Hostel21 implements Serializable{
 				  
 				  if(!found)
 				  {
-					  System.out.println("No User present!!!!  Please enter proper User Id");  
+					  System.out.println();
+					  System.out.println("No User present!!!!  Please enter proper User Id");
+					  System.out.println();
 				  }
 				  
 				}
 				
 					
-			}
+			} 
 			else if(args[1].equals("change"))
 			{
 				boolean UserPresent = false;
 				ReadUsers();
-				//System.out.println(args[2]);
-								
+				
+				if(args.length < 3)
+				{	
+					System.out.println("arguements are not proper/complete: Usage is as follows ");
+					System.out.println("user change --user_id xxxxx [ --first_name --last_name --email [ --cc_number --expiration_date --security_code --phone ]]");
+					System.out.println();
+					return ;
+				 
+				}
+				
+				
+				if(!(args[2].equals("--user_id")))
+				{
+					System.out.println();
+					System.out.println("Not Valid command : " + args[2]);
+					System.out.println();
+					return ;
+				}
+						
+												
 				for (User U : users)
 				{
 					//System.out.println(U.UserId);
-					if(U.UserId == Integer.parseInt(args[2]))
+					if(U.UserId == Integer.parseInt(args[3]))
 					{
-					  UserPresent = true;
-					  for(int i =3;i<args.length;i++)
+					  UserPresent = true; 
+					  for(int i =4;i<args.length;i=i+2)
 					  {
 						if(args[i].equals("--first_name"))
 						{
+							if( i == args.length-1)
+							{
+							//	System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.FirstName = args[i+1];
 						}
 						else if(args[i].equals("--last_name"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.LastName = args[i+1];
 						}
 						else if(args[i].equals("--email"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.EmailID = args[i+1];
 						}
 						else if(args[i].equals("--cc_number"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.CCNumber = args[i+1];
 						}
 						else if(args[i].equals("--security_code"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.SecurityCode = args[i+1];
 						}
 						else if(args[i].equals("--phone"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.PhoneNumber = args[i+1];
 						}
 						else if(args[i].equals("--expiration_date"))
 						{
+							if( i == args.length-1)
+							{
+								System.out.println();
+					  			System.out.println("\nNo arguments for : " + args[i]);
+					  			System.out.println(); 
+					  			return ;	
+								
+							}
+							
 							U.ExpiryDate = df.parse(args[i+1]);
+						}
+						else
+						{
+							System.out.println();
+							System.out.println("Arguements are not proper/complete: Usage is as follows ");
+							System.out.println("user change --user_id xxxx [ --first_name --last_name --email [ --cc_number --expiration_date --security_code --phone ]]");
+							System.out.println();
 						}
 						
 					 }
+					  
+					  System.out.println();
+					  System.out.println("User with Id " +args[3]+" is updated" );
+					  System.out.println();
 					  StoreUser();
 					
 					  break;
@@ -620,15 +1077,29 @@ class Hostel21 implements Serializable{
 				 System.out.println("Entered User does not exist");
 			    } 
 			}
+			else
+			{
+				System.out.println();
+				System.out.println("Invalid command : " + args[1]);
+				System.out.println();
+			}
 			
 			
 		}
+		else
+		{
+			System.out.println();
+			System.out.println("Invalid command : " + Command);
+			System.out.println();
+			return ;
+		}
 			
+		
 		}
 
 
 	public static void ParseXML(String FileName) {
-		try {
+		try { 
 
 			File stocks = new File(FileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -636,7 +1107,7 @@ class Hostel21 implements Serializable{
 			Document doc = dBuilder.parse(stocks);
 			doc.getDocumentElement().normalize();
 
-			System.out.println("root of xml file" + doc.getDocumentElement().getNodeName());
+			//System.out.println("root of xml file" + doc.getDocumentElement().getNodeName());
 			NodeList nodes = doc.getElementsByTagName("hostel");
 		//	System.out.println("==========================" + nodes.getLength());
 			
@@ -692,10 +1163,10 @@ class Hostel21 implements Serializable{
 				//System.out.println("alcohol: " + getValue("alcohol", element));
 				PT.SetAlcohol(getValue("alcohol", element));
 				
-				System.out.println("cancellation_deadline: " + getValue("cancellation_deadline", element));
+				//System.out.println("cancellation_deadline: " + getValue("cancellation_deadline", element));
 				PT.SetDedline(getIntegerValue("cancellation_deadline", element));
 				
-				System.out.println("cancellation_penalty: " + getValue("cancellation_penalty", element));
+				//System.out.println("cancellation_penalty: " + getValue("cancellation_penalty", element));
 				PT.SetPenalty(getValue("cancellation_penalty", element));
 				
 				
@@ -753,7 +1224,10 @@ class Hostel21 implements Serializable{
 			
 			}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				System.out.println();
+				System.out.println("Entered file '"+ FileName + "' does not exist " );
+				System.out.println();
+				return ;
 			}
 		}
 
@@ -803,8 +1277,8 @@ class Hostel21 implements Serializable{
 		
 		 for(Property TempP : properties){
 			 
-			 System.out.println(TempP.GetPropertyName());
-			 System.out.println(PT.GetPropertyName());
+			// System.out.println(TempP.GetPropertyName());
+			// System.out.println(PT.GetPropertyName());
 			 
 			 if(TempP.GetPropertyName().equals(PT.GetPropertyName()) &&
 				TempP.GetCityName().equals(PT.GetCityName())	 )
@@ -818,13 +1292,17 @@ class Hostel21 implements Serializable{
 		 
 		 if(!found)
 		 {
-		  System.out.println("Its new property. So adding it");
+		  System.out.println();
+		  System.out.println("Its new Hostel. So adding it to database");
+		  System.out.println();
 		  properties.add(PT);
 		 
 		 }
 		  else
 		 {
-			System.out.println("Property already present so updating its inventory");
+			System.out.println();
+			System.out.println("Hostel already exist so updating its inventory");
+			System.out.println();
 			
 			PFound.SetAlcohol(PT.GetAlcohol());
 			PFound.SetCheck_In(PT.GetCheck_In());
@@ -844,20 +1322,27 @@ class Hostel21 implements Serializable{
 					{
 						FB.SetRoomNumber(B.GetRoomNumber());
 						
-						if(FB.StartingDate.after(B.StartingDate))
-							   FB.StartingDate = B.StartingDate;
-							
-						if( FB.EndingDate.before(B.EndingDate))
-							   FB.EndingDate = B.EndingDate;
 						
 						for (Map.Entry<Date,Bed.BedInformation> entry : B.BedInfo.entrySet())
 						{
 							Date key =  entry.getKey();
+							//System.out.println(key);
 							
 													
 							Bed.BedInformation FBentry = FB.BedInfo.get(key);
 							
-							if(!FBentry.Booked)
+							if( FBentry==null)
+							{
+								Bed.BedInformation newFBentry =  FB.new BedInformation();
+								newFBentry.Booked    = false;
+								newFBentry.BookingId = 0;
+								newFBentry.Price     = entry.getValue().Price;
+								FB.BedInfo.put(key, newFBentry);
+								
+							}
+							
+							else
+							if (!(FBentry.Booked))
 							{
 								FBentry.Price = entry.getValue().Price;
 								
